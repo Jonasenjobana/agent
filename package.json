@@ -4,8 +4,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start:frontend": "cd frontend/pc && npm run dev",
-    "start:backend": "cd llm && npm run dev"
+    "start:f": "cd frontend/pc && npm run dev",
+    "start:b": "cd llm && npm run dev"
    },
   "keywords": [],
   "author": "",
