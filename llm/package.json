@@ -1,0 +1,28 @@
+{
+  "name": "@agent-project-app/llm",
+  "version": "1.0.0",
+  "description": "",
+  "type": "commonjs",
+  "scripts": {
+    "build": "nest build",
+    "dev": "nest start --watch --env-file .env",
+    "start": "node --env-file=.env dist/main.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.34.1",
+  "dependencies": {
+    "@agent-project-app/shared": "workspace:*",
+    "@langchain/core": "^1.1.49",
+    "@langchain/openai": "^1.4.7",
+    "@nestjs/common": "^11.1.27",
+    "@nestjs/core": "^11.1.27",
+    "@nestjs/platform-express": "^11.1.27",
+    "langchain": "^1.4.5",
+    "reflect-metadata": "^0.2.2"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^11.0.23"
+  }
+}

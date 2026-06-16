@@ -1,0 +1,18 @@
+{
+  "name": "agent-project-app",
+  "private": true,
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start:frontend": "cd frontend/pc && npm run dev",
+    "start:backend": "cd llm && npm run dev"
+   },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.34.1",
+  "devDependencies": {
+    "@types/node": "^25.9.3",
+    "typescript": "^6.0.3"
+  }
+}
