@@ -4,8 +4,9 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start:f": "cd frontend/pc && npm run dev",
-    "start:b": "cd llm && npm run dev"
+    "start": "pnpm  -r run dev",
+    "type-check": "pnpm -r run type-check",
+    "build": "pnpm -r run build"
    },
   "keywords": [],
   "author": "",
@@ -14,5 +15,10 @@
   "devDependencies": {
     "@types/node": "^25.9.3",
     "typescript": "^6.0.3"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "better-sqlite3"
+    ]
   }
 }

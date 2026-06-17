@@ -3,8 +3,8 @@ import type { RestfulAPIResponse } from '@agent-project-app/shared';
 
 @Controller('chat')
 export class ChatController {
-    @Get('')
-    getHello(): RestfulAPIResponse<string> {
+    @Get('stream')
+    getStream(): RestfulAPIResponse<string> {
         return {
             code: 200,
             message: 'success',

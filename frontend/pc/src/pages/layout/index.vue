@@ -73,7 +73,7 @@ const menuList: MenuItem[] = [
   {
     url: '/chat',
     name: 'Chat',
-    icon: 'ChatDotSquare',
+    icon: 'House',
   },
 ]
 
