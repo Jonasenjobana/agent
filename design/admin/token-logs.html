@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>企业知识库 — Token 消耗日志</title>
+  <script>(function(){var t=localStorage.getItem('kb-theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');})();</script>
+  <link rel="stylesheet" href="../css/tokens.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <style>
+    .admin-page { padding: var(--space-xl); overflow-y: auto; flex: 1; }
+    .token-summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-lg); margin-bottom: var(--space-xl); }
+    .token-mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+    .query-preview {
+      max-width: 360px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: var(--fg);
+    }
+    @media (max-width: 1100px) { .token-summary { grid-template-columns: 1fr 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div class="sidebar-header"><div class="sidebar-logo">KB</div><span class="sidebar-title">企业知识库</span></div>
+      <nav class="sidebar-nav">
+        <div class="sidebar-section-label">导航</div>
+        <a class="nav-item" href="../index.html"><span class="nav-icon">💬</span><span>智能问答</span></a>
+        <a class="nav-item" href="../knowledge-base.html"><span class="nav-icon">📚</span><span>知识库</span></a>
+        <a class="nav-item" href="../settings.html"><span class="nav-icon">⚙️</span><span>系统设置</span></a>
+        <div class="sidebar-section-label" style="margin-top:var(--space-lg);">后台管理</div>
+        <a class="nav-item" href="index.html"><span class="nav-icon">📊</span><span>总览</span></a>
+        <a class="nav-item" href="projects.html"><span class="nav-icon">📁</span><span>项目管理</span><span class="nav-badge">5</span></a>
+        <a class="nav-item" href="users.html"><span class="nav-icon">👥</span><span>用户管理</span><span class="nav-badge">12</span></a>
+        <a class="nav-item active" href="token-logs.html"><span class="nav-icon">📋</span><span>Token 日志</span></a>
+        <a class="nav-item" href="knowledge.html"><span class="nav-icon">🗂️</span><span>知识库管理</span></a>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="theme-toggle-btn" onclick="toggleTheme()" title="切换夜间/白天模式" id="themeToggle">🌙</button>
+        <div class="user-card">
+          <div class="user-avatar">张</div>
+          <div class="user-info"><div class="user-name">张明远</div><div class="user-role">管理员</div></div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="main-content">
+      <div class="topbar">
+        <span class="topbar-title">Token 消耗日志</span>
+        <div class="topbar-actions">
+          <span style="font-size:var(--font-size-sm);color:var(--fg-secondary);">今日: 1.2M tokens</span>
+          <button class="btn btn-secondary btn-sm" onclick="alert('导出 CSV')">📥 导出</button>
+        </div>
+      </div>
+
+      <div class="admin-page">
+        <!-- Summary Cards -->
+        <div class="token-summary">
+          <div class="stat-card">
+            <span class="stat-label">今日消耗</span>
+            <span class="stat-value token-mono">1,203,488</span>
+            <span class="stat-change" style="color:var(--success);">↑ 8.2% 较昨日</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">本月消耗</span>
+            <span class="stat-value token-mono">36,241,900</span>
+            <span class="stat-change" style="color:var(--fg-secondary);">额度 36.2%</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">平均每次问答</span>
+            <span class="stat-value token-mono">423</span>
+            <span class="stat-change" style="color:var(--fg-secondary);">tokens / 次</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">预估本月费用</span>
+            <span class="stat-value" style="color:var(--accent);">¥ 724.84</span>
+            <span class="stat-change" style="color:var(--fg-secondary);">基于 GPT-4o 定价</span>
+          </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filter-row">
+          <div class="search-bar" style="max-width:240px;">
+            <span class="search-icon">🔍</span>
+            <input type="text" placeholder="搜索用户…" />
+          </div>
+          <select class="select" style="min-width:140px;">
+            <option>今天</option>
+            <option>最近 7 天</option>
+            <option>本月</option>
+            <option>自定义范围</option>
+          </select>
+          <select class="select" style="min-width:120px;">
+            <option>全部用户</option>
+            <option>张明远</option>
+            <option>李思思</option>
+            <option>王磊</option>
+          </select>
+          <select class="select" style="min-width:100px;">
+            <option>全部模型</option>
+            <option>GPT-4o</option>
+            <option>GPT-4o-mini</option>
+            <option>embedding</option>
+          </select>
+        </div>
+
+        <!-- Table -->
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>时间</th>
+                <th>用户</th>
+                <th>操作类型</th>
+                <th>模型</th>
+                <th>输入 Token</th>
+                <th>输出 Token</th>
+                <th>总计</th>
+                <th>费用</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="font-size:var(--font-size-sm);">2026-06-18 14:32:21</td>
+                <td>张明远</td>
+                <td>智能问答</td>
+                <td style="font-size:var(--font-size-sm);">GPT-4o</td>
+                <td class="token-mono">1,280</td>
+                <td class="token-mono">423</td>
+                <td class="token-mono" style="font-weight:600;">1,703</td>
+                <td style="font-family:var(--font-mono);font-size:var(--font-size-sm);">¥0.034</td>
+              </tr>
+              <tr>
+                <td style="font-size:var(--font-size-sm);">2026-06-18 14:28:05</td>
+                <td>李思思</td>
+                <td>智能问答</td>
+                <td style="font-size:var(--font-size-sm);">GPT-4o</td>
+                <td class="token-mono">892</td>
+                <td class="token-mono">1,204</td>
+                <td class="token-mono" style="font-weight:600;">2,096</td>
+                <td style="font-family:var(--font-mono);font-size:var(--font-size-sm);">¥0.042</td>
+              </tr>
+              <tr>
+                <td style="font-size:var(--font-size-sm);">2026-06-18 14:15:00</td>
+                <td>王磊</td>
+                <td>智能问答</td>
+                <td style="font-size:var(--font-size-sm);">GPT-4o</td>
+                <td class="token-mono">2,560</td>
+                <td class="token-mono">1,847</td>
+                <td class="token-mono" style="font-weight:600;">4,407</td>
+                <td style="font-family:var(--font-mono);font-size:var(--font-size-sm);">¥0.088</td>
+              </tr>
+              <tr>
+                <td style="font-size:var(--font-size-sm);">2026-06-18 14:10:33</td>
+                <td>孙浩然</td>
+                <td>智能问答</td>
+                <td style="font-size:var(--font-size-sm);">GPT-4o-mini</td>
+                <td class="token-mono">445</td>
+                <td class="token-mono">212</td>
+                <td class="token-mono" style="font-weight:600;">657</td>
+                <td style="font-family:var(--font-mono);font-size:var(--font-size-sm);">¥0.003</td>
+              </tr>
+              <tr>
+                <td style="font-size:var(--font-size-sm);">2026-06-18 13:55:18</td>
+                <td>张明远</td>
+                <td>文档向量化</td>
+                <td style="font-size:var(--font-size-sm);">text-embedding-3-large</td>
+                <td class="token-mono">8,192</td>
+                <td class="token-mono">—</td>
+                <td class="token-mono" style="font-weight:600;">8,192</td>
+                <td style="font-family:var(--font-mono);font-size:var(--font-size-sm);">¥0.008</td>
+              </tr>
+              <tr>
+                <td style="font-size:var(--font-size-sm);">2026-06-18 13:42:09</td>
+                <td>赵雪</td>
+                <td>智能问答</td>
+                <td style="font-size:var(--font-size-sm);">GPT-4o</td>
+                <td class="token-mono">1,024</td>
+                <td class="token-mono">510</td>
+                <td class="token-mono" style="font-weight:600;">1,534</td>
+                <td style="font-family:var(--font-mono);font-size:var(--font-size-sm);">¥0.031</td>
+              </tr>
+              <tr>
+                <td style="font-size:var(--font-size-sm);">2026-06-18 13:28:44</td>
+                <td>李思思</td>
+                <td>智能问答</td>
+                <td style="font-size:var(--font-size-sm);">GPT-4o</td>
+                <td class="token-mono">1,536</td>
+                <td class="token-mono">678</td>
+                <td class="token-mono" style="font-weight:600;">2,214</td>
+                <td style="font-family:var(--font-mono);font-size:var(--font-size-sm);">¥0.044</td>
+              </tr>
+              <tr>
+                <td style="font-size:var(--font-size-sm);">2026-06-18 12:15:30</td>
+                <td>王磊</td>
+                <td>文档向量化</td>
+                <td style="font-size:var(--font-size-sm);">text-embedding-3-large</td>
+                <td class="token-mono">16,384</td>
+                <td class="token-mono">—</td>
+                <td class="token-mono" style="font-weight:600;">16,384</td>
+                <td style="font-family:var(--font-mono);font-size:var(--font-size-sm);">¥0.016</td>
+              </tr>
+              <tr>
+                <td style="font-size:var(--font-size-sm);">2026-06-18 11:58:12</td>
+                <td>周敏</td>
+                <td>智能问答</td>
+                <td style="font-size:var(--font-size-sm);">GPT-4o-mini</td>
+                <td class="token-mono">230</td>
+                <td class="token-mono">98</td>
+                <td class="token-mono" style="font-weight:600;">328</td>
+                <td style="font-family:var(--font-mono);font-size:var(--font-size-sm);">¥0.002</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="pagination">
+          <button disabled>‹</button>
+          <button class="active">1</button>
+          <button>2</button>
+          <button>3</button>
+          <button>4</button>
+          <button>…</button>
+          <button>24</button>
+          <button>›</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    (function(){var b=document.getElementById('themeToggle');if(b)b.textContent=document.documentElement.getAttribute('data-theme')==='dark'?'☀️':'🌙';})();
+    function toggleTheme(){var h=document.documentElement,d=h.getAttribute('data-theme')==='dark';if(d){h.removeAttribute('data-theme');localStorage.setItem('kb-theme','light');}else{h.setAttribute('data-theme','dark');localStorage.setItem('kb-theme','dark');}var b=document.getElementById('themeToggle');if(b)b.textContent=d?'🌙':'☀️';}
+  </script>
+</body>
+</html>

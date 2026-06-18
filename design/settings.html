@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>企业知识库 — 系统设置</title>
+  <script>(function(){var t=localStorage.getItem('kb-theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');})();</script>
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <style>
+    .settings-page { padding: var(--space-xl); overflow-y: auto; flex: 1; }
+    .settings-sections { display: flex; flex-direction: column; gap: var(--space-xl); max-width: 720px; }
+    .settings-group { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; }
+    .settings-group-header { padding: var(--space-lg) var(--space-xl); border-bottom: 1px solid var(--border-light); }
+    .settings-group-title { font-size: var(--font-size-lg); font-weight: 600; }
+    .settings-group-desc { font-size: var(--font-size-sm); color: var(--fg-secondary); margin-top: var(--space-xs); }
+    .settings-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-lg) var(--space-xl);
+      border-bottom: 1px solid var(--border-light);
+    }
+    .settings-row:last-child { border-bottom: none; }
+    .settings-row-label { font-size: var(--font-size-base); font-weight: 500; }
+    .settings-row-hint { font-size: var(--font-size-sm); color: var(--fg-secondary); margin-top: 2px; }
+    .settings-row .input { max-width: 280px; }
+    .settings-row .select { max-width: 200px; }
+    .settings-save-bar {
+      position: sticky;
+      bottom: 0;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: var(--space-lg) var(--space-xl);
+      display: flex;
+      justify-content: flex-end;
+      gap: var(--space-md);
+    }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">KB</div>
+        <span class="sidebar-title">企业知识库</span>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="sidebar-section-label">导航</div>
+        <a class="nav-item" href="index.html">
+          <span class="nav-icon">💬</span><span>智能问答</span>
+        </a>
+        <a class="nav-item" href="knowledge-base.html">
+          <span class="nav-icon">📚</span><span>知识库</span>
+        </a>
+        <a class="nav-item active" href="settings.html">
+          <span class="nav-icon">⚙️</span><span>系统设置</span>
+        </a>
+        <div class="sidebar-section-label" style="margin-top: var(--space-lg);">后台管理</div>
+        <a class="nav-item" href="admin/index.html">
+          <span class="nav-icon">📊</span><span>总览</span>
+        </a>
+        <a class="nav-item" href="admin/projects.html">
+          <span class="nav-icon">📁</span><span>项目管理</span>
+          <span class="nav-badge">5</span>
+        </a>
+        <a class="nav-item" href="admin/users.html">
+          <span class="nav-icon">👥</span><span>用户管理</span>
+          <span class="nav-badge">12</span>
+        </a>
+        <a class="nav-item" href="admin/token-logs.html">
+          <span class="nav-icon">📋</span><span>Token 日志</span>
+        </a>
+        <a class="nav-item" href="admin/knowledge.html">
+          <span class="nav-icon">🗂️</span><span>知识库管理</span>
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="theme-toggle-btn" onclick="toggleTheme()" title="切换夜间/白天模式" id="themeToggle">🌙</button>
+        <div class="user-card">
+          <div class="user-avatar">张</div>
+          <div class="user-info">
+            <div class="user-name">张明远</div>
+            <div class="user-role">管理员</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="main-content">
+      <div class="topbar">
+        <span class="topbar-title">系统设置</span>
+      </div>
+
+      <div class="settings-page">
+        <div class="settings-sections">
+
+          <!-- 项目知识库选择 -->
+          <div class="settings-group">
+            <div class="settings-group-header">
+              <div class="settings-group-title">项目知识库</div>
+              <div class="settings-group-desc">选择当前对话使用的项目上下文与知识库范围</div>
+            </div>
+            <div class="settings-row">
+              <div>
+                <div class="settings-row-label">当前项目</div>
+                <div class="settings-row-hint">智能问答将基于该项目下的知识库进行检索</div>
+              </div>
+              <select class="select" id="projectSelect" onchange="updateProjectKb(this.value)">
+                <option value="tech" selected>技术研发中心</option>
+                <option value="hr">人力资源部</option>
+                <option value="finance">财务管理部</option>
+                <option value="marketing">市场运营部</option>
+                <option value="product">产品设计部</option>
+              </select>
+            </div>
+            <div class="settings-row">
+              <div>
+                <div class="settings-row-label">检索范围</div>
+                <div class="settings-row-hint">选择问答时检索的知识范围</div>
+              </div>
+              <select class="select">
+                <option value="project_and_shared" selected>当前项目 + 共享知识库</option>
+                <option value="project_only">仅当前项目知识库</option>
+                <option value="shared_only">仅共享知识库</option>
+              </select>
+            </div>
+            <div class="settings-row">
+              <div>
+                <div class="settings-row-label">共享知识库</div>
+                <div class="settings-row-hint">所有项目均可访问的公共知识库</div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:6px;font-size:var(--font-size-sm);">
+                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                  <input type="checkbox" checked /> <span>公司制度与流程规范</span>
+                </label>
+                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                  <input type="checkbox" checked /> <span>通用技术与培训资料</span>
+                </label>
+                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                  <input type="checkbox" /> <span>法律与合规文档</span>
+                </label>
+              </div>
+            </div>
+            <div class="settings-row">
+              <div>
+                <div class="settings-row-label">项目知识库概览</div>
+                <div class="settings-row-hint">当前项目的文档与向量情况</div>
+              </div>
+              <div style="text-align:right;font-size:var(--font-size-sm);color:var(--fg-secondary);line-height:1.6;">
+                <div>文档: <strong style="color:var(--fg);">486</strong> 份</div>
+                <div>向量: <strong style="color:var(--fg);font-family:var(--font-mono);">14,280</strong> 条</div>
+                <div>大小: <strong style="color:var(--fg);">680 MB</strong></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 知识库设置 -->
+          <div class="settings-group">
+            <div class="settings-group-header">
+              <div class="settings-group-title">知识库设置</div>
+              <div class="settings-group-desc">后端 LangChain 服务端的文档处理与检索策略</div>
+            </div>
+            <div class="settings-row">
+              <div>
+                <div class="settings-row-label">自动向量化新文档</div>
+                <div class="settings-row-hint">上传后自动处理并生成向量索引</div>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="settings-row">
+              <div>
+                <div class="settings-row-label">分块策略</div>
+                <div class="settings-row-hint">文档切分方式</div>
+              </div>
+              <select class="select">
+                <option selected>语义分块（推荐）</option>
+                <option>固定大小（512 tokens）</option>
+                <option>固定大小（1024 tokens）</option>
+              </select>
+            </div>
+            <div class="settings-row">
+              <div>
+                <div class="settings-row-label">结果重排序</div>
+                <div class="settings-row-hint">使用 Cross-encoder 重排序提升准确率</div>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="settings-row">
+              <div>
+                <div class="settings-row-label">检索召回数</div>
+                <div class="settings-row-hint">重排序前召回的候选文档数</div>
+              </div>
+              <select class="select">
+                <option>10</option>
+                <option selected>20</option>
+                <option>30</option>
+                <option>50</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- 通知与偏好 -->
+          <div class="settings-group">
+            <div class="settings-group-header">
+              <div class="settings-group-title">通知与偏好</div>
+              <div class="settings-group-desc">个人偏好设置</div>
+            </div>
+            <div class="settings-row">
+              <div>
+                <div class="settings-row-label">文档更新通知</div>
+                <div class="settings-row-hint">知识库有更新时发送通知</div>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="settings-row">
+              <div>
+                <div class="settings-row-label">Token 用量提醒</div>
+                <div class="settings-row-hint">每日用量超过限额时提醒</div>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="settings-row">
+              <div>
+                <div class="settings-row-label">语言</div>
+                <div class="settings-row-hint">界面显示语言</div>
+              </div>
+              <select class="select">
+                <option selected>简体中文</option>
+                <option>English</option>
+                <option>日本語</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Save bar -->
+        <div class="settings-save-bar">
+          <button class="btn btn-secondary" onclick="resetSettings()">重置</button>
+          <button class="btn btn-primary" onclick="saveSettings()">保存设置</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function saveSettings() {
+      var btn = event.target;
+      btn.textContent = '保存中…';
+      btn.disabled = true;
+      setTimeout(function() {
+        btn.textContent = '已保存 ✓';
+        setTimeout(function() {
+          btn.textContent = '保存设置';
+          btn.disabled = false;
+        }, 1500);
+      }, 500);
+    }
+    function resetSettings() {
+      if (confirm('确认重置所有设置为默认值？')) {
+        var btn = event.target;
+        btn.textContent = '已重置';
+        setTimeout(function() { btn.textContent = '重置'; }, 1000);
+      }
+    }
+    function updateProjectKb(val) {
+      var names = {
+        tech: { docs: '486', vectors: '14,280', size: '680 MB' },
+        hr: { docs: '312', vectors: '8,442', size: '410 MB' },
+        finance: { docs: '228', vectors: '6,891', size: '320 MB' },
+        marketing: { docs: '174', vectors: '5,102', size: '240 MB' },
+        product: { docs: '138', vectors: '3,706', size: '190 MB' }
+      };
+      var info = names[val] || names.tech;
+      // Update the overview in the last settings row
+      var rows = document.querySelectorAll('.settings-row');
+      var lastRow = rows[rows.length - 1]; // Rough, but works for the structure
+      if (lastRow) {
+        lastRow.innerHTML = '<div><div class="settings-row-label">项目知识库概览</div><div class="settings-row-hint">当前项目的文档与向量情况</div></div>'
+          + '<div style="text-align:right;font-size:var(--font-size-sm);color:var(--fg-secondary);line-height:1.6;">'
+          + '<div>文档: <strong style="color:var(--fg);">' + info.docs + '</strong> 份</div>'
+          + '<div>向量: <strong style="color:var(--fg);font-family:var(--font-mono);">' + info.vectors + '</strong> 条</div>'
+          + '<div>大小: <strong style="color:var(--fg);">' + info.size + '</strong></div></div>';
+      }
+    }
+    function toggleTheme() {
+      var html = document.documentElement;
+      var isDark = html.getAttribute('data-theme') === 'dark';
+      if (isDark) { html.removeAttribute('data-theme'); localStorage.setItem('kb-theme', 'light'); }
+      else { html.setAttribute('data-theme', 'dark'); localStorage.setItem('kb-theme', 'dark'); }
+      var btn = document.getElementById('themeToggle');
+      if (btn) btn.textContent = isDark ? '🌙' : '☀️';
+    }
+  </script>
+</body>
+</html>

@@ -18,7 +18,7 @@ export class UserService {
     return this.userRepository.save(createUserDto);
   }
 
-  async login(email: string, password: string) {
+  async login(email: string, password: string): Promise<User | null> {
     const user = await this.userRepository.findOne({where: {email}});
     if (!user) {
       return null;

@@ -11,20 +11,5 @@ export class UserController {
   register(@Body() createUserDto: CreateUserDto) {
     return this.userService.register(createUserDto);
   }
-  @Post('login')
-  async login(@Body() createUserDto: CreateUserDto) {
-    const user = await this.userService.login(createUserDto.email, createUserDto.password);
-    if (!user) {
-      return {
-        message: 'User not found',
-      }
-    }
-    return {
-      message: 'Login success',
-      user: {
-        name: user.name,
-        email: user.email,
-      }
-    };
-  }
+
 }

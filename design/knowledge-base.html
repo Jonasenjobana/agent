@@ -1,0 +1,533 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>企业知识库 — 知识库</title>
+  <script>(function(){var t=localStorage.getItem('kb-theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');})();</script>
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <style>
+    .kb-page { padding: var(--space-xl); overflow-y: auto; flex: 1; }
+    .kb-page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space-xl);
+      flex-wrap: wrap;
+      gap: var(--space-md);
+    }
+    .kb-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-lg);
+      margin-bottom: var(--space-xl);
+    }
+    .kb-section { margin-bottom: var(--space-xl); }
+    .kb-section-title {
+      font-size: var(--font-size-lg);
+      font-weight: 600;
+      margin-bottom: var(--space-lg);
+    }
+
+    /* KB type tabs */
+    .kb-type-tabs {
+      display: flex;
+      gap: 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: var(--space-xl);
+    }
+    .kb-type-tab {
+      padding: var(--space-md) var(--space-xl);
+      font-size: var(--font-size-base);
+      font-weight: 500;
+      color: var(--fg-secondary);
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .kb-type-tab:hover { color: var(--fg); }
+    .kb-type-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .kb-type-panel { display: none; }
+    .kb-type-panel.active { display: block; }
+
+    /* Project selector row */
+    .project-selector-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      margin-bottom: var(--space-lg);
+    }
+    .project-selector-row label { font-size: var(--font-size-sm); font-weight: 500; white-space: nowrap; }
+
+    /* Upload area */
+    .kb-upload-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: var(--space-xl);
+    }
+    .upload-zone {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius-md);
+      padding: var(--space-2xl);
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .upload-zone:hover { border-color: var(--accent); background: var(--accent-light); }
+    .upload-zone.dragover { border-color: var(--accent); background: var(--accent-light); }
+    .upload-zone-icon { font-size: 36px; margin-bottom: var(--space-md); }
+    .upload-zone-text { font-size: var(--font-size-base); color: var(--fg); font-weight: 500; }
+    .upload-zone-hint { font-size: var(--font-size-sm); color: var(--fg-tertiary); margin-top: var(--space-xs); }
+    .upload-meta-row {
+      display: flex;
+      gap: var(--space-lg);
+      margin-top: var(--space-lg);
+      align-items: center;
+    }
+
+    /* File list */
+    .file-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-lg);
+      padding: var(--space-lg);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--space-sm);
+      transition: border-color 0.15s;
+    }
+    .file-item:hover { border-color: var(--fg-tertiary); }
+    .file-icon {
+      width: 40px; height: 40px;
+      border-radius: var(--radius-sm);
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .file-icon.pdf { background: var(--file-icon-pdf); }
+    .file-icon.doc { background: var(--file-icon-doc); }
+    .file-icon.md  { background: var(--file-icon-md); }
+    .file-icon.txt { background: var(--file-icon-txt); }
+    .file-info { flex: 1; min-width: 0; }
+    .file-name {
+      font-size: var(--font-size-base);
+      font-weight: 500;
+      color: var(--fg);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .file-meta {
+      font-size: var(--font-size-xs);
+      color: var(--fg-tertiary);
+      margin-top: 2px;
+    }
+    .file-project-tag {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: var(--radius-full);
+      font-size: 11px;
+      font-weight: 500;
+      background: var(--accent-light);
+      color: var(--accent);
+      margin-right: var(--space-sm);
+    }
+    .file-project-tag.shared { background: var(--tag-shared-bg); color: var(--tag-shared-fg); }
+    .file-status { display: flex; align-items: center; gap: var(--space-sm); }
+    .kb-categories {
+      display: flex;
+      gap: var(--space-sm);
+      flex-wrap: wrap;
+      margin-bottom: var(--space-lg);
+    }
+    .cat-chip {
+      padding: 6px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      font-size: var(--font-size-sm);
+      color: var(--fg-secondary);
+      cursor: pointer;
+      transition: all 0.15s;
+      background: var(--surface);
+    }
+    .cat-chip:hover { border-color: var(--accent); color: var(--accent); }
+    .cat-chip.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+    .upload-progress { margin-top: var(--space-md); }
+    .upload-progress-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      font-size: var(--font-size-sm);
+      color: var(--fg-secondary);
+    }
+    .upload-progress-row .progress-bar { flex: 1; }
+
+    /* Shared KB cards */
+    .shared-kb-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-lg);
+      margin-bottom: var(--space-xl);
+    }
+    .shared-kb-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: var(--space-xl);
+    }
+    .shared-kb-card-title {
+      font-size: var(--font-size-base);
+      font-weight: 600;
+      margin-bottom: var(--space-xs);
+    }
+    .shared-kb-card-desc {
+      font-size: var(--font-size-sm);
+      color: var(--fg-secondary);
+      margin-bottom: var(--space-md);
+    }
+    .shared-kb-card-meta {
+      display: flex;
+      gap: var(--space-lg);
+      font-size: var(--font-size-xs);
+      color: var(--fg-tertiary);
+    }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">KB</div>
+        <span class="sidebar-title">企业知识库</span>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="sidebar-section-label">导航</div>
+        <a class="nav-item" href="index.html">
+          <span class="nav-icon">💬</span><span>智能问答</span>
+        </a>
+        <a class="nav-item active" href="knowledge-base.html">
+          <span class="nav-icon">📚</span><span>知识库</span>
+        </a>
+        <a class="nav-item" href="settings.html">
+          <span class="nav-icon">⚙️</span><span>系统设置</span>
+        </a>
+        <div class="sidebar-section-label" style="margin-top: var(--space-lg);">后台管理</div>
+        <a class="nav-item" href="admin/index.html">
+          <span class="nav-icon">📊</span><span>总览</span>
+        </a>
+        <a class="nav-item" href="admin/projects.html">
+          <span class="nav-icon">📁</span><span>项目管理</span>
+          <span class="nav-badge">5</span>
+        </a>
+        <a class="nav-item" href="admin/users.html">
+          <span class="nav-icon">👥</span><span>用户管理</span>
+          <span class="nav-badge">12</span>
+        </a>
+        <a class="nav-item" href="admin/token-logs.html">
+          <span class="nav-icon">📋</span><span>Token 日志</span>
+        </a>
+        <a class="nav-item" href="admin/knowledge.html">
+          <span class="nav-icon">🗂️</span><span>知识库管理</span>
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="theme-toggle-btn" onclick="toggleTheme()" title="切换夜间/白天模式" id="themeToggle">🌙</button>
+        <div class="user-card">
+          <div class="user-avatar">张</div>
+          <div class="user-info">
+            <div class="user-name">张明远</div>
+            <div class="user-role">管理员</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="main-content">
+      <div class="topbar">
+        <span class="topbar-title">知识库</span>
+        <div class="topbar-actions">
+          <div class="search-bar">
+            <span class="search-icon">🔍</span>
+            <input type="text" placeholder="搜索知识库文档…" />
+          </div>
+        </div>
+      </div>
+
+      <div class="kb-page">
+        <!-- Stats -->
+        <div class="kb-stats">
+          <div class="stat-card">
+            <span class="stat-label">文档总数</span>
+            <span class="stat-value">1,284</span>
+            <span class="stat-change" style="color: var(--success);">+32 本月</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">向量化进度</span>
+            <span class="stat-value">98.6%</span>
+            <span class="stat-change" style="color: var(--fg-secondary);">1,266 / 1,284</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">项目数量</span>
+            <span class="stat-value">5</span>
+            <span class="stat-change" style="color: var(--fg-secondary);">3 个有独立知识库</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">知识库总大小</span>
+            <span class="stat-value">2.4 GB</span>
+            <span class="stat-change" style="color: var(--fg-secondary);">含 2 个共享知识库</span>
+          </div>
+        </div>
+
+        <!-- KB Type Tabs -->
+        <div class="kb-type-tabs">
+          <span class="kb-type-tab active" data-tab="project">项目知识库</span>
+          <span class="kb-type-tab" data-tab="shared">共享知识库</span>
+        </div>
+
+        <!-- Panel: 项目知识库 -->
+        <div class="kb-type-panel active" id="panel-project">
+          <!-- Project selector -->
+          <div class="project-selector-row">
+            <label for="kbProjectSelect">当前项目：</label>
+            <select class="select" id="kbProjectSelect" style="min-width:200px;">
+              <option value="tech">技术研发中心</option>
+              <option value="hr">人力资源部</option>
+              <option value="finance">财务管理部</option>
+              <option value="marketing" selected>市场运营部</option>
+              <option value="product">产品设计部</option>
+            </select>
+            <span style="font-size:var(--font-size-sm);color:var(--fg-secondary);" id="projectKbInfo">文档 174 份 · 向量 5,102 条 · 240 MB</span>
+          </div>
+
+          <!-- Upload Section -->
+          <div class="kb-section">
+            <div class="kb-section-title">上传文档</div>
+            <div class="kb-upload-card">
+              <div class="upload-zone" id="uploadZone">
+                <div class="upload-zone-icon">📄</div>
+                <div class="upload-zone-text">拖拽文件到此处，或点击选择文件</div>
+                <div class="upload-zone-hint">支持 PDF、Word、Markdown、TXT，每文件最大 50 MB</div>
+              </div>
+              <input type="file" id="fileInput" multiple accept=".pdf,.doc,.docx,.md,.txt" style="display:none;" />
+              <div class="upload-meta-row">
+                <span style="font-size:var(--font-size-sm);color:var(--fg-secondary);">上传至：</span>
+                <select class="select" style="min-width:160px;">
+                  <option value="project" selected>当前项目知识库</option>
+                  <option value="shared-tech">共享 · 技术资料库</option>
+                  <option value="shared-company">共享 · 公司制度库</option>
+                </select>
+              </div>
+              <div class="upload-progress" id="uploadProgress" style="display:none;">
+                <div class="upload-progress-row">
+                  <span id="uploadFileName">上传中…</span>
+                  <div class="progress-bar" style="flex:1;"><div class="progress-fill" id="uploadProgressFill" style="width:0%;"></div></div>
+                  <span id="uploadPercent">0%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Categories & File List -->
+          <div class="kb-section">
+            <div class="kb-section-title">已上传文档</div>
+            <div class="kb-categories">
+              <span class="cat-chip active">全部</span>
+              <span class="cat-chip">技术文档</span>
+              <span class="cat-chip">管理制度</span>
+              <span class="cat-chip">流程规范</span>
+              <span class="cat-chip">培训资料</span>
+            </div>
+            <div id="fileList">
+              <div class="file-item">
+                <div class="file-icon pdf">📕</div>
+                <div class="file-info">
+                  <div class="file-name"><span class="file-project-tag">市场</span>2026-Q3-市场推广计划.pdf</div>
+                  <div class="file-meta">技术文档 · 12.4 MB · 2026-06-15</div>
+                </div>
+                <div class="file-status"><span class="badge badge-success">已索引</span></div>
+              </div>
+              <div class="file-item">
+                <div class="file-icon doc">📘</div>
+                <div class="file-info">
+                  <div class="file-name"><span class="file-project-tag">市场</span>竞品分析报告 - 2026.docx</div>
+                  <div class="file-meta">管理制度 · 2.1 MB · 2026-06-12</div>
+                </div>
+                <div class="file-status"><span class="badge badge-success">已索引</span></div>
+              </div>
+              <div class="file-item">
+                <div class="file-icon md">📗</div>
+                <div class="file-info">
+                  <div class="file-name"><span class="file-project-tag">市场</span>社交媒体运营策略.md</div>
+                  <div class="file-meta">流程规范 · 48 KB · 2026-06-10</div>
+                </div>
+                <div class="file-status"><span class="badge badge-success">已索引</span></div>
+              </div>
+              <div class="file-item">
+                <div class="file-icon pdf">📕</div>
+                <div class="file-info">
+                  <div class="file-name"><span class="file-project-tag">市场</span>品牌宣传手册-2026.pdf</div>
+                  <div class="file-meta">培训资料 · 8.7 MB · 2026-06-08</div>
+                </div>
+                <div class="file-status"><span class="badge badge-success">已索引</span></div>
+              </div>
+              <div class="file-item">
+                <div class="file-icon doc">📘</div>
+                <div class="file-info">
+                  <div class="file-name"><span class="file-project-tag">市场</span>活动策划模板-2026版.docx</div>
+                  <div class="file-meta">培训资料 · 15.2 MB · 2026-06-05</div>
+                </div>
+                <div class="file-status"><span class="badge badge-warning">处理中</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel: 共享知识库 -->
+        <div class="kb-type-panel" id="panel-shared">
+          <div class="kb-section">
+            <div class="kb-section-title">共享知识库</div>
+            <div class="kb-section-desc" style="font-size:var(--font-size-sm);color:var(--fg-secondary);margin-bottom:var(--space-lg);">所有项目均可访问的公共知识库，由管理员统一维护</div>
+            <div class="shared-kb-grid">
+              <div class="shared-kb-card">
+                <div class="shared-kb-card-title">📘 公司制度与流程规范</div>
+                <div class="shared-kb-card-desc">包含公司级管理制度、人事流程、财务规范等通用文档</div>
+                <div class="shared-kb-card-meta">
+                  <span>312 份文档</span>
+                  <span>8,442 条向量</span>
+                  <span>410 MB</span>
+                </div>
+                <div style="margin-top:var(--space-md);">
+                  <button class="btn btn-ghost btn-sm">浏览文档 →</button>
+                </div>
+              </div>
+              <div class="shared-kb-card">
+                <div class="shared-kb-card-title">📗 通用技术与培训资料</div>
+                <div class="shared-kb-card-desc">公司技术培训、通用开发规范、新员工入职技术手册</div>
+                <div class="shared-kb-card-meta">
+                  <span>228 份文档</span>
+                  <span>6,891 条向量</span>
+                  <span>320 MB</span>
+                </div>
+                <div style="margin-top:var(--space-md);">
+                  <button class="btn btn-ghost btn-sm">浏览文档 →</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      // KB Type tabs
+      var kbTabs = document.querySelectorAll('.kb-type-tab');
+      kbTabs.forEach(function(tab) {
+        tab.addEventListener('click', function() {
+          kbTabs.forEach(function(t) { t.classList.remove('active'); });
+          tab.classList.add('active');
+          document.querySelectorAll('.kb-type-panel').forEach(function(p) { p.classList.remove('active'); });
+          document.getElementById('panel-' + tab.getAttribute('data-tab')).classList.add('active');
+        });
+      });
+
+      // Project selector
+      var projSelect = document.getElementById('kbProjectSelect');
+      var projInfo = document.getElementById('projectKbInfo');
+      if (projSelect) {
+        projSelect.addEventListener('change', function() {
+          var data = {
+            tech: { docs: 486, vectors: 14280, size: '680 MB' },
+            hr: { docs: 312, vectors: 8442, size: '410 MB' },
+            finance: { docs: 228, vectors: 6891, size: '320 MB' },
+            marketing: { docs: 174, vectors: 5102, size: '240 MB' },
+            product: { docs: 138, vectors: 3706, size: '190 MB' }
+          };
+          var d = data[this.value] || data.marketing;
+          projInfo.textContent = '文档 ' + d.docs + ' 份 · 向量 ' + d.vectors + ' 条 · ' + d.size;
+        });
+      }
+
+      // Upload
+      var uploadZone = document.getElementById('uploadZone');
+      var fileInput = document.getElementById('fileInput');
+      var uploadProgress = document.getElementById('uploadProgress');
+      var progressFill = document.getElementById('uploadProgressFill');
+      var uploadPercent = document.getElementById('uploadPercent');
+      var uploadFileName = document.getElementById('uploadFileName');
+
+      uploadZone.addEventListener('click', function() { fileInput.click(); });
+      uploadZone.addEventListener('dragover', function(e) { e.preventDefault(); uploadZone.classList.add('dragover'); });
+      uploadZone.addEventListener('dragleave', function() { uploadZone.classList.remove('dragover'); });
+      uploadZone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        uploadZone.classList.remove('dragover');
+        if (e.dataTransfer.files.length) handleFiles(e.dataTransfer.files);
+      });
+      fileInput.addEventListener('change', function() {
+        if (this.files.length) handleFiles(this.files);
+      });
+
+      function handleFiles(files) {
+        Array.from(files).forEach(function(file) {
+          uploadFileName.textContent = file.name;
+          uploadProgress.style.display = 'block';
+          var pct = 0;
+          var interval = setInterval(function() {
+            pct += Math.random() * 12 + 3;
+            if (pct >= 100) {
+              pct = 100;
+              clearInterval(interval);
+              uploadProgress.style.display = 'none';
+              addFileToList(file);
+            }
+            progressFill.style.width = pct + '%';
+            uploadPercent.textContent = Math.round(pct) + '%';
+          }, 200);
+        });
+      }
+
+      function addFileToList(file) {
+        var ext = file.name.split('.').pop().toLowerCase();
+        var iconMap = { pdf: '📕', doc: '📘', docx: '📘', md: '📗', txt: '📄' };
+        var icon = iconMap[ext] || '📄';
+        var typeMap = { pdf: 'PDF 文档', doc: 'Word 文档', docx: 'Word 文档', md: 'Markdown', txt: '纯文本' };
+        var ftype = typeMap[ext] || '文档';
+        var size = (file.size / 1024 / 1024).toFixed(1);
+        var projTag = projSelect ? '<span class="file-project-tag">' + projSelect.options[projSelect.selectedIndex].text + '</span>' : '';
+
+        var el = document.createElement('div');
+        el.className = 'file-item';
+        el.innerHTML = '<div class="file-icon ' + ext + '">' + icon + '</div>'
+          + '<div class="file-info"><div class="file-name">' + projTag + file.name + '</div>'
+          + '<div class="file-meta">' + ftype + ' · ' + size + ' MB · 刚刚</div></div>'
+          + '<div class="file-status"><span class="badge badge-warning">处理中</span></div>';
+
+        document.getElementById('fileList').prepend(el);
+        setTimeout(function() {
+          el.querySelector('.badge').className = 'badge badge-success';
+          el.querySelector('.badge').textContent = '已索引';
+        }, 1500);
+      }
+      // Init theme toggle icon
+      var themeBtn = document.getElementById('themeToggle');
+      if (themeBtn) themeBtn.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '☀️' : '🌙';
+    })();
+    function toggleTheme() {
+      var html = document.documentElement;
+      var isDark = html.getAttribute('data-theme') === 'dark';
+      if (isDark) { html.removeAttribute('data-theme'); localStorage.setItem('kb-theme', 'light'); }
+      else { html.setAttribute('data-theme', 'dark'); localStorage.setItem('kb-theme', 'dark'); }
+      var btn = document.getElementById('themeToggle');
+      if (btn) btn.textContent = isDark ? '🌙' : '☀️';
+    }
+  </script>
+</body>
+</html>

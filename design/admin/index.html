@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>企业知识库 — 管理总览</title>
+  <script>(function(){var t=localStorage.getItem('kb-theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');})();</script>
+  <link rel="stylesheet" href="../css/tokens.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <style>
+    .admin-page { padding: var(--space-xl); overflow-y: auto; flex: 1; }
+    .admin-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-lg); margin-bottom: var(--space-xl); }
+    .admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-xl); }
+    .admin-card-full { grid-column: 1 / -1; }
+    .recent-activity { list-style: none; }
+    .recent-activity li {
+      display: flex;
+      align-items: center;
+      gap: var(--space-lg);
+      padding: var(--space-md) 0;
+      border-bottom: 1px solid var(--border-light);
+      font-size: var(--font-size-sm);
+    }
+    .recent-activity li:last-child { border-bottom: none; }
+    .activity-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .activity-dot.green { background: var(--success); }
+    .activity-dot.blue  { background: var(--info); }
+    .activity-dot.orange { background: var(--warning); }
+    .activity-time { margin-left: auto; color: var(--fg-tertiary); font-size: var(--font-size-xs); white-space: nowrap; }
+
+    @media (max-width: 1100px) {
+      .admin-stats { grid-template-columns: 1fr 1fr; }
+      .admin-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">KB</div>
+        <span class="sidebar-title">企业知识库</span>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="sidebar-section-label">导航</div>
+        <a class="nav-item" href="../index.html"><span class="nav-icon">💬</span><span>智能问答</span></a>
+        <a class="nav-item" href="../knowledge-base.html"><span class="nav-icon">📚</span><span>知识库</span></a>
+        <a class="nav-item" href="../settings.html"><span class="nav-icon">⚙️</span><span>系统设置</span></a>
+        <div class="sidebar-section-label" style="margin-top: var(--space-lg);">后台管理</div>
+        <a class="nav-item active" href="index.html"><span class="nav-icon">📊</span><span>总览</span></a>
+        <a class="nav-item" href="projects.html"><span class="nav-icon">📁</span><span>项目管理</span><span class="nav-badge">5</span></a>
+        <a class="nav-item" href="users.html"><span class="nav-icon">👥</span><span>用户管理</span><span class="nav-badge">12</span></a>
+        <a class="nav-item" href="token-logs.html"><span class="nav-icon">📋</span><span>Token 日志</span></a>
+        <a class="nav-item" href="knowledge.html"><span class="nav-icon">🗂️</span><span>知识库管理</span></a>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="theme-toggle-btn" onclick="toggleTheme()" title="切换夜间/白天模式" id="themeToggle">🌙</button>
+        <div class="user-card">
+          <div class="user-avatar">张</div>
+          <div class="user-info">
+            <div class="user-name">张明远</div>
+            <div class="user-role">管理员</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="main-content">
+      <div class="topbar">
+        <span class="topbar-title">管理总览</span>
+        <div class="topbar-actions">
+          <span class="badge badge-info">系统运行正常</span>
+          <span style="font-size: var(--font-size-sm); color: var(--fg-secondary);">最后更新: 刚刚</span>
+        </div>
+      </div>
+
+      <div class="admin-page">
+        <div class="admin-stats">
+          <div class="stat-card">
+            <span class="stat-label">注册用户</span>
+            <span class="stat-value">186</span>
+            <span class="stat-change" style="color: var(--success);">+8 本月</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">今日问答</span>
+            <span class="stat-value">2,847</span>
+            <span class="stat-change" style="color: var(--fg-secondary);">较昨日 ↑12.3%</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Token 消耗（今日）</span>
+            <span class="stat-value">1.2M</span>
+            <span class="stat-change" style="color: var(--fg-secondary);">约 ¥24.50</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">向量存储</span>
+            <span class="stat-value">1.8 GB</span>
+            <span class="stat-change" style="color: var(--fg-secondary);">38,421 个向量</span>
+          </div>
+        </div>
+
+        <div class="admin-grid">
+          <!-- 最近活动 -->
+          <div class="card admin-card-full">
+            <div class="card-header">
+              <span class="card-title">最近活动</span>
+              <button class="btn btn-ghost btn-sm">查看全部 →</button>
+            </div>
+            <ul class="recent-activity">
+              <li>
+                <span class="activity-dot green"></span>
+                <span>张明远 上传了 <strong>2026-Q3-产品路线图.pdf</strong> (2.3 MB)</span>
+                <span class="activity-time">2 分钟前</span>
+              </li>
+              <li>
+                <span class="activity-dot blue"></span>
+                <span>李思思 在「智能问答」中发起了 5 次对话</span>
+                <span class="activity-time">15 分钟前</span>
+              </li>
+              <li>
+                <span class="activity-dot green"></span>
+                <span>系统自动完成了 12 个文档的向量化更新</span>
+                <span class="activity-time">32 分钟前</span>
+              </li>
+              <li>
+                <span class="activity-dot orange"></span>
+                <span>用户「王磊」Token 日消耗达到限额 (80%)</span>
+                <span class="activity-time">1 小时前</span>
+              </li>
+              <li>
+                <span class="activity-dot blue"></span>
+                <span>新用户「赵雪」完成注册并加入「技术部」</span>
+                <span class="activity-time">2 小时前</span>
+              </li>
+              <li>
+                <span class="activity-dot green"></span>
+                <span>《数据安全合规培训-2026》文档更新完成</span>
+                <span class="activity-time">3 小时前</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- 系统状态 -->
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">系统状态</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:var(--space-md);">
+              <div style="display:flex;justify-content:space-between;font-size:var(--font-size-sm);"><span>API 服务</span><span class="badge badge-success" style="font-size:11px;">正常</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:var(--font-size-sm);"><span>向量数据库</span><span class="badge badge-success" style="font-size:11px;">正常</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:var(--font-size-sm);"><span>对象存储</span><span class="badge badge-success" style="font-size:11px;">正常</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:var(--font-size-sm);"><span>文档解析队列</span><span class="badge badge-warning" style="font-size:11px;">积压 6</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:var(--font-size-sm);"><span>Redis 缓存</span><span class="badge badge-success" style="font-size:11px;">正常</span></div>
+            </div>
+          </div>
+
+          <!-- Token 用量概览 -->
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Token 用量概览</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:var(--space-md);">
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:var(--font-size-sm);margin-bottom:var(--space-xs);">
+                  <span>本月已用</span><span style="font-weight:600;">36.2M / 100M</span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" style="width:36%;"></div></div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:var(--font-size-sm);margin-bottom:var(--space-xs);">
+                  <span>今日已用</span><span style="font-weight:600;">1.2M / 5M</span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" style="width:24%;"></div></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:var(--font-size-sm);margin-top:var(--space-sm);">
+                <span>预估月费</span><span style="font-weight:600;color:var(--accent);">≈ ¥724</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    (function(){var b=document.getElementById('themeToggle');if(b)b.textContent=document.documentElement.getAttribute('data-theme')==='dark'?'☀️':'🌙';})();
+    function toggleTheme(){var h=document.documentElement,d=h.getAttribute('data-theme')==='dark';if(d){h.removeAttribute('data-theme');localStorage.setItem('kb-theme','light');}else{h.setAttribute('data-theme','dark');localStorage.setItem('kb-theme','dark');}var b=document.getElementById('themeToggle');if(b)b.textContent=d?'🌙':'☀️';}
+  </script>
+</body>
+</html>

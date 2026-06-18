@@ -6,9 +6,14 @@ import Layout from '@/pages/layout/index.vue'
 
 const routes: RouteRecordRaw[] = [
   {
-    path: '/',
+    path: '/login',
+    name: 'Login',
+    meta: { title: 'Login' },
+    component: () => import('@/pages/login/index.vue'),
+  },
+  {
+    path: '/main',
     component: Layout,
-    redirect: '/chat',
     children: [
       {
         path: 'chat',

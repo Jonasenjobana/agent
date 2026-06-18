@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>企业知识库 — 项目管理</title>
+  <script>(function(){var t=localStorage.getItem('kb-theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');})();</script>
+  <link rel="stylesheet" href="../css/tokens.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <style>
+    .admin-page { padding: var(--space-xl); overflow-y: auto; flex: 1; }
+    .proj-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-lg); margin-bottom: var(--space-xl); }
+
+    .proj-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: var(--space-xl);
+      transition: border-color 0.15s;
+    }
+    .proj-card:hover { border-color: var(--accent); }
+    .proj-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-lg); }
+    .proj-card-name { font-size: var(--font-size-lg); font-weight: 600; }
+    .proj-card-desc { font-size: var(--font-size-sm); color: var(--fg-secondary); margin-top: var(--space-xs); }
+    .proj-card-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-md);
+      padding: var(--space-lg) 0;
+      border-top: 1px solid var(--border-light);
+      border-bottom: 1px solid var(--border-light);
+      margin-bottom: var(--space-lg);
+    }
+    .proj-stat { text-align: center; }
+    .proj-stat-value { font-size: var(--font-size-lg); font-weight: 700; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+    .proj-stat-label { font-size: var(--font-size-xs); color: var(--fg-tertiary); margin-top: 2px; }
+    .proj-card-actions { display: flex; gap: var(--space-sm); justify-content: flex-end; }
+
+    .proj-kb-tag {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: var(--radius-full);
+      font-size: 11px;
+      font-weight: 500;
+    }
+    .proj-kb-tag.shared { background: var(--tag-shared-bg); color: var(--tag-shared-fg); }
+    .proj-kb-tag.isolated { background: var(--tag-isolated-bg); color: var(--tag-isolated-fg); }
+    .proj-kb-tag.both { background: var(--tag-both-bg); color: var(--tag-both-fg); }
+
+    @media (max-width: 1100px) { .proj-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div class="sidebar-header"><div class="sidebar-logo">KB</div><span class="sidebar-title">企业知识库</span></div>
+      <nav class="sidebar-nav">
+        <div class="sidebar-section-label">导航</div>
+        <a class="nav-item" href="../index.html"><span class="nav-icon">💬</span><span>智能问答</span></a>
+        <a class="nav-item" href="../knowledge-base.html"><span class="nav-icon">📚</span><span>知识库</span></a>
+        <a class="nav-item" href="../settings.html"><span class="nav-icon">⚙️</span><span>系统设置</span></a>
+        <div class="sidebar-section-label" style="margin-top:var(--space-lg);">后台管理</div>
+        <a class="nav-item" href="index.html"><span class="nav-icon">📊</span><span>总览</span></a>
+        <a class="nav-item active" href="projects.html"><span class="nav-icon">📁</span><span>项目管理</span><span class="nav-badge">5</span></a>
+        <a class="nav-item" href="users.html"><span class="nav-icon">👥</span><span>用户管理</span><span class="nav-badge">12</span></a>
+        <a class="nav-item" href="token-logs.html"><span class="nav-icon">📋</span><span>Token 日志</span></a>
+        <a class="nav-item" href="knowledge.html"><span class="nav-icon">🗂️</span><span>知识库管理</span></a>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="theme-toggle-btn" onclick="toggleTheme()" title="切换夜间/白天模式" id="themeToggle">🌙</button>
+        <div class="user-card">
+          <div class="user-avatar">张</div>
+          <div class="user-info"><div class="user-name">张明远</div><div class="user-role">管理员</div></div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="main-content">
+      <div class="topbar">
+        <span class="topbar-title">项目管理</span>
+        <div class="topbar-actions">
+          <span style="font-size:var(--font-size-sm);color:var(--fg-secondary);">共 5 个项目</span>
+          <button class="btn btn-primary btn-sm" onclick="alert('打开新建项目表单')">＋ 新建项目</button>
+        </div>
+      </div>
+
+      <div class="admin-page">
+        <!-- Summary -->
+        <div class="admin-stats" style="display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-lg);margin-bottom:var(--space-xl);">
+          <div class="stat-card">
+            <span class="stat-label">总项目数</span>
+            <span class="stat-value">5</span>
+            <span class="stat-change" style="color:var(--success);">+2 本季度</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">项目成员</span>
+            <span class="stat-value">186</span>
+            <span class="stat-change" style="color:var(--fg-secondary);">平均 37 人/项目</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">项目知识库总量</span>
+            <span class="stat-value">1.8 GB</span>
+            <span class="stat-change" style="color:var(--fg-secondary);">38,421 条向量</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">独立知识库项目</span>
+            <span class="stat-value">3</span>
+            <span class="stat-change" style="color:var(--fg-secondary);">2 个使用共享库</span>
+          </div>
+        </div>
+
+        <!-- Project Cards -->
+        <div class="proj-grid">
+          <!-- 技术研发中心 -->
+          <div class="proj-card">
+            <div class="proj-card-header">
+              <div>
+                <div class="proj-card-name">🔧 技术研发中心</div>
+                <div class="proj-card-desc">负责公司核心产品研发与技术架构</div>
+              </div>
+              <span class="proj-kb-tag both">独立 + 共享</span>
+            </div>
+            <div class="proj-card-stats">
+              <div class="proj-stat"><div class="proj-stat-value">42</div><div class="proj-stat-label">成员</div></div>
+              <div class="proj-stat"><div class="proj-stat-value">486</div><div class="proj-stat-label">文档</div></div>
+              <div class="proj-stat"><div class="proj-stat-value">14,280</div><div class="proj-stat-label">向量</div></div>
+            </div>
+            <div class="proj-card-actions">
+              <button class="btn btn-ghost btn-sm">成员管理</button>
+              <button class="btn btn-ghost btn-sm">知识库设置</button>
+              <button class="btn btn-ghost btn-sm">编辑</button>
+            </div>
+          </div>
+
+          <!-- 人力资源部 -->
+          <div class="proj-card">
+            <div class="proj-card-header">
+              <div>
+                <div class="proj-card-name">👥 人力资源部</div>
+                <div class="proj-card-desc">员工关系、招聘培训、绩效考核管理</div>
+              </div>
+              <span class="proj-kb-tag isolated">独立知识库</span>
+            </div>
+            <div class="proj-card-stats">
+              <div class="proj-stat"><div class="proj-stat-value">12</div><div class="proj-stat-label">成员</div></div>
+              <div class="proj-stat"><div class="proj-stat-value">312</div><div class="proj-stat-label">文档</div></div>
+              <div class="proj-stat"><div class="proj-stat-value">8,442</div><div class="proj-stat-label">向量</div></div>
+            </div>
+            <div class="proj-card-actions">
+              <button class="btn btn-ghost btn-sm">成员管理</button>
+              <button class="btn btn-ghost btn-sm">知识库设置</button>
+              <button class="btn btn-ghost btn-sm">编辑</button>
+            </div>
+          </div>
+
+          <!-- 财务管理部 -->
+          <div class="proj-card">
+            <div class="proj-card-header">
+              <div>
+                <div class="proj-card-name">💰 财务管理部</div>
+                <div class="proj-card-desc">财务报表、预算管理、审计合规</div>
+              </div>
+              <span class="proj-kb-tag isolated">独立知识库</span>
+            </div>
+            <div class="proj-card-stats">
+              <div class="proj-stat"><div class="proj-stat-value">10</div><div class="proj-stat-label">成员</div></div>
+              <div class="proj-stat"><div class="proj-stat-value">228</div><div class="proj-stat-label">文档</div></div>
+              <div class="proj-stat"><div class="proj-stat-value">6,891</div><div class="proj-stat-label">向量</div></div>
+            </div>
+            <div class="proj-card-actions">
+              <button class="btn btn-ghost btn-sm">成员管理</button>
+              <button class="btn btn-ghost btn-sm">知识库设置</button>
+              <button class="btn btn-ghost btn-sm">编辑</button>
+            </div>
+          </div>
+
+          <!-- 市场运营部 -->
+          <div class="proj-card">
+            <div class="proj-card-header">
+              <div>
+                <div class="proj-card-name">📢 市场运营部</div>
+                <div class="proj-card-desc">品牌推广、活动运营、用户增长策略</div>
+              </div>
+              <span class="proj-kb-tag isolated">独立知识库</span>
+            </div>
+            <div class="proj-card-stats">
+              <div class="proj-stat"><div class="proj-stat-value">18</div><div class="proj-stat-label">成员</div></div>
+              <div class="proj-stat"><div class="proj-stat-value">174</div><div class="proj-stat-label">文档</div></div>
+              <div class="proj-stat"><div class="proj-stat-value">5,102</div><div class="proj-stat-label">向量</div></div>
+            </div>
+            <div class="proj-card-actions">
+              <button class="btn btn-ghost btn-sm">成员管理</button>
+              <button class="btn btn-ghost btn-sm">知识库设置</button>
+              <button class="btn btn-ghost btn-sm">编辑</button>
+            </div>
+          </div>
+
+          <!-- 产品设计部 -->
+          <div class="proj-card">
+            <div class="proj-card-header">
+              <div>
+                <div class="proj-card-name">🎨 产品设计部</div>
+                <div class="proj-card-desc">产品规划、UI/UX 设计、用户研究</div>
+              </div>
+              <span class="proj-kb-tag both">独立 + 共享</span>
+            </div>
+            <div class="proj-card-stats">
+              <div class="proj-stat"><div class="proj-stat-value">15</div><div class="proj-stat-label">成员</div></div>
+              <div class="proj-stat"><div class="proj-stat-value">138</div><div class="proj-stat-label">文档</div></div>
+              <div class="proj-stat"><div class="proj-stat-value">3,706</div><div class="proj-stat-label">向量</div></div>
+            </div>
+            <div class="proj-card-actions">
+              <button class="btn btn-ghost btn-sm">成员管理</button>
+              <button class="btn btn-ghost btn-sm">知识库设置</button>
+              <button class="btn btn-ghost btn-sm">编辑</button>
+            </div>
+          </div>
+
+          <!-- 共享知识库（特殊项目卡片） -->
+          <div class="proj-card" style="border-style:dashed;">
+            <div class="proj-card-header">
+              <div>
+                <div class="proj-card-name">🌐 共享知识库</div>
+                <div class="proj-card-desc">所有项目均可访问的公共知识库集合</div>
+              </div>
+              <span class="proj-kb-tag shared">跨项目共享</span>
+            </div>
+            <div class="proj-card-stats">
+              <div class="proj-stat"><div class="proj-stat-value">—</div><div class="proj-stat-label">专属成员</div></div>
+              <div class="proj-stat"><div class="proj-stat-value">540</div><div class="proj-stat-label">文档</div></div>
+              <div class="proj-stat"><div class="proj-stat-value">15,333</div><div class="proj-stat-label">向量</div></div>
+            </div>
+            <div class="proj-card-actions">
+              <button class="btn btn-ghost btn-sm" onclick="alert('管理共享知识库')">管理共享库 →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project KB table -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">项目知识库配置详情</span>
+            <button class="btn btn-secondary btn-sm" onclick="alert('批量配置')">批量配置</button>
+          </div>
+          <div class="table-container" style="border:none;">
+            <table>
+              <thead>
+                <tr>
+                  <th>项目</th>
+                  <th>知识库类型</th>
+                  <th>关联集合</th>
+                  <th>文档数</th>
+                  <th>向量数</th>
+                  <th>存储大小</th>
+                  <th>最后索引</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>技术研发中心</td>
+                  <td><span class="proj-kb-tag both" style="font-size:11px;">独立 + 共享</span></td>
+                  <td style="font-family:var(--font-mono);font-size:var(--font-size-sm);">tech_docs</td>
+                  <td style="font-family:var(--font-mono);">486</td>
+                  <td style="font-family:var(--font-mono);">14,280</td>
+                  <td>680 MB</td>
+                  <td style="font-size:var(--font-size-sm);">2026-06-18</td>
+                  <td><button class="btn btn-ghost btn-sm">配置</button></td>
+                </tr>
+                <tr>
+                  <td>人力资源部</td>
+                  <td><span class="proj-kb-tag isolated" style="font-size:11px;">独立知识库</span></td>
+                  <td style="font-family:var(--font-mono);font-size:var(--font-size-sm);">hr_policies</td>
+                  <td style="font-family:var(--font-mono);">312</td>
+                  <td style="font-family:var(--font-mono);">8,442</td>
+                  <td>410 MB</td>
+                  <td style="font-size:var(--font-size-sm);">2026-06-17</td>
+                  <td><button class="btn btn-ghost btn-sm">配置</button></td>
+                </tr>
+                <tr>
+                  <td>财务管理部</td>
+                  <td><span class="proj-kb-tag isolated" style="font-size:11px;">独立知识库</span></td>
+                  <td style="font-family:var(--font-mono);font-size:var(--font-size-sm);">finance_reports</td>
+                  <td style="font-family:var(--font-mono);">228</td>
+                  <td style="font-family:var(--font-mono);">6,891</td>
+                  <td>320 MB</td>
+                  <td style="font-size:var(--font-size-sm);">2026-06-15</td>
+                  <td><button class="btn btn-ghost btn-sm">配置</button></td>
+                </tr>
+                <tr>
+                  <td>市场运营部</td>
+                  <td><span class="proj-kb-tag isolated" style="font-size:11px;">独立知识库</span></td>
+                  <td style="font-family:var(--font-mono);font-size:var(--font-size-sm);">marketing_materials</td>
+                  <td style="font-family:var(--font-mono);">174</td>
+                  <td style="font-family:var(--font-mono);">5,102</td>
+                  <td>240 MB</td>
+                  <td style="font-size:var(--font-size-sm);">2026-06-18</td>
+                  <td><button class="btn btn-ghost btn-sm">配置</button></td>
+                </tr>
+                <tr>
+                  <td>产品设计部</td>
+                  <td><span class="proj-kb-tag both" style="font-size:11px;">独立 + 共享</span></td>
+                  <td style="font-family:var(--font-mono);font-size:var(--font-size-sm);">product_specs</td>
+                  <td style="font-family:var(--font-mono);">138</td>
+                  <td style="font-family:var(--font-mono);">3,706</td>
+                  <td>190 MB</td>
+                  <td style="font-size:var(--font-size-sm);">2026-06-12</td>
+                  <td><button class="btn btn-ghost btn-sm">配置</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    (function(){var b=document.getElementById('themeToggle');if(b)b.textContent=document.documentElement.getAttribute('data-theme')==='dark'?'☀️':'🌙';})();
+    function toggleTheme(){var h=document.documentElement,d=h.getAttribute('data-theme')==='dark';if(d){h.removeAttribute('data-theme');localStorage.setItem('kb-theme','light');}else{h.setAttribute('data-theme','dark');localStorage.setItem('kb-theme','dark');}var b=document.getElementById('themeToggle');if(b)b.textContent=d?'🌙':'☀️';}
+  </script>
+</body>
+</html>

@@ -20,19 +20,16 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       less: {
-        // 全局变量自动注入到每个组件的 less 中
-        additionalData: `@import "@/styles/variables.less";`,
         javascriptEnabled: true,
       },
     },
   },
   server: {
     proxy: {
-      '/llm': {
-        target: 'http://localhost:3030',
+      '/api': {
+        target: 'http://localhost:3000',
         changeOrigin: true,
         secure: false,
-        rewrite: (path) => path.replace(/^\/llm/, ''),
       },
     },
   }

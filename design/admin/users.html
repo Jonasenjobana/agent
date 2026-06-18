@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>企业知识库 — 用户管理</title>
+  <script>(function(){var t=localStorage.getItem('kb-theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');})();</script>
+  <link rel="stylesheet" href="../css/tokens.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <style>
+    .admin-page { padding: var(--space-xl); overflow-y: auto; flex: 1; }
+    .user-avatar-sm {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      display: inline-grid;
+      place-items: center;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .user-cell { display: flex; align-items: center; gap: var(--space-md); }
+    .role-tag {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: var(--radius-full);
+      font-size: var(--font-size-xs);
+      font-weight: 500;
+    }
+    .role-admin { background: var(--role-admin-bg); color: var(--role-admin-fg); }
+    .role-user  { background: var(--role-user-bg); color: var(--role-user-fg); }
+    .role-viewer{ background: var(--role-viewer-bg); color: var(--role-viewer-fg); }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div class="sidebar-header"><div class="sidebar-logo">KB</div><span class="sidebar-title">企业知识库</span></div>
+      <nav class="sidebar-nav">
+        <div class="sidebar-section-label">导航</div>
+        <a class="nav-item" href="../index.html"><span class="nav-icon">💬</span><span>智能问答</span></a>
+        <a class="nav-item" href="../knowledge-base.html"><span class="nav-icon">📚</span><span>知识库</span></a>
+        <a class="nav-item" href="../settings.html"><span class="nav-icon">⚙️</span><span>系统设置</span></a>
+        <div class="sidebar-section-label" style="margin-top:var(--space-lg);">后台管理</div>
+        <a class="nav-item" href="index.html"><span class="nav-icon">📊</span><span>总览</span></a>
+        <a class="nav-item" href="projects.html"><span class="nav-icon">📁</span><span>项目管理</span><span class="nav-badge">5</span></a>
+        <a class="nav-item active" href="users.html"><span class="nav-icon">👥</span><span>用户管理</span><span class="nav-badge">12</span></a>
+        <a class="nav-item" href="token-logs.html"><span class="nav-icon">📋</span><span>Token 日志</span></a>
+        <a class="nav-item" href="knowledge.html"><span class="nav-icon">🗂️</span><span>知识库管理</span></a>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="theme-toggle-btn" onclick="toggleTheme()" title="切换夜间/白天模式" id="themeToggle">🌙</button>
+        <div class="user-card">
+          <div class="user-avatar">张</div>
+          <div class="user-info"><div class="user-name">张明远</div><div class="user-role">管理员</div></div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="main-content">
+      <div class="topbar">
+        <span class="topbar-title">用户管理</span>
+        <div class="topbar-actions">
+          <span style="font-size:var(--font-size-sm);color:var(--fg-secondary);">共 186 位用户</span>
+          <button class="btn btn-primary btn-sm" onclick="alert('打开添加用户表单')">＋ 添加用户</button>
+        </div>
+      </div>
+      <div class="admin-page">
+        <div class="filter-row">
+          <div class="search-bar" style="max-width:300px;">
+            <span class="search-icon">🔍</span>
+            <input type="text" placeholder="搜索用户…" oninput="filterUsers(this.value)" />
+          </div>
+          <select class="select" style="min-width:120px;">
+            <option>全部角色</option>
+            <option>管理员</option>
+            <option>普通用户</option>
+            <option>只读用户</option>
+          </select>
+          <select class="select" style="min-width:120px;">
+            <option>全部部门</option>
+            <option>技术部</option>
+            <option>产品部</option>
+            <option>人事部</option>
+            <option>财务部</option>
+            <option>市场部</option>
+          </select>
+        </div>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>用户</th>
+                <th>部门</th>
+                <th>角色</th>
+                <th>状态</th>
+                <th>今日 Token</th>
+                <th>本月 Token</th>
+                <th>注册时间</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><div class="user-cell"><span class="user-avatar-sm" style="background:var(--accent);">张</span><span>张明远</span></div></td>
+                <td>技术部</td>
+                <td><span class="role-tag role-admin">管理员</span></td>
+                <td><span class="badge badge-success">在线</span></td>
+                <td style="font-family:var(--font-mono);">45,231</td>
+                <td style="font-family:var(--font-mono);">892,441</td>
+                <td style="color:var(--fg-secondary);font-size:var(--font-size-sm);">2025-03-10</td>
+                <td><button class="btn btn-ghost btn-sm">编辑</button></td>
+              </tr>
+              <tr>
+                <td><div class="user-cell"><span class="user-avatar-sm" style="background:#4A90D9;">李</span><span>李思思</span></div></td>
+                <td>产品部</td>
+                <td><span class="role-tag role-user">用户</span></td>
+                <td><span class="badge badge-success">在线</span></td>
+                <td style="font-family:var(--font-mono);">28,503</td>
+                <td style="font-family:var(--font-mono);">623,190</td>
+                <td style="color:var(--fg-secondary);font-size:var(--font-size-sm);">2025-06-22</td>
+                <td><button class="btn btn-ghost btn-sm">编辑</button></td>
+              </tr>
+              <tr>
+                <td><div class="user-cell"><span class="user-avatar-sm" style="background:#D94A4A;">王</span><span>王磊</span></div></td>
+                <td>技术部</td>
+                <td><span class="role-tag role-user">用户</span></td>
+                <td><span class="badge badge-success">在线</span></td>
+                <td style="font-family:var(--font-mono);">102,844</td>
+                <td style="font-family:var(--font-mono);">1,842,300</td>
+                <td style="color:var(--fg-secondary);font-size:var(--font-size-sm);">2025-01-15</td>
+                <td><button class="btn btn-ghost btn-sm">编辑</button></td>
+              </tr>
+              <tr>
+                <td><div class="user-cell"><span class="user-avatar-sm" style="background:#D9A84A;">赵</span><span>赵雪</span></div></td>
+                <td>人事部</td>
+                <td><span class="role-tag role-user">用户</span></td>
+                <td><span class="badge badge-info">离线</span></td>
+                <td style="font-family:var(--font-mono);">3,210</td>
+                <td style="font-family:var(--font-mono);">12,450</td>
+                <td style="color:var(--fg-secondary);font-size:var(--font-size-sm);">2026-06-17</td>
+                <td><button class="btn btn-ghost btn-sm">编辑</button></td>
+              </tr>
+              <tr>
+                <td><div class="user-cell"><span class="user-avatar-sm" style="background:#7A4AD9;">孙</span><span>孙浩然</span></div></td>
+                <td>技术部</td>
+                <td><span class="role-tag role-user">用户</span></td>
+                <td><span class="badge badge-success">在线</span></td>
+                <td style="font-family:var(--font-mono);">15,677</td>
+                <td style="font-family:var(--font-mono);">456,210</td>
+                <td style="color:var(--fg-secondary);font-size:var(--font-size-sm);">2025-09-03</td>
+                <td><button class="btn btn-ghost btn-sm">编辑</button></td>
+              </tr>
+              <tr>
+                <td><div class="user-cell"><span class="user-avatar-sm" style="background:#4AD9A8;">周</span><span>周敏</span></div></td>
+                <td>财务部</td>
+                <td><span class="role-tag role-viewer">只读</span></td>
+                <td><span class="badge badge-info">离线</span></td>
+                <td style="font-family:var(--font-mono);">1,024</td>
+                <td style="font-family:var(--font-mono);">18,440</td>
+                <td style="color:var(--fg-secondary);font-size:var(--font-size-sm);">2025-11-20</td>
+                <td><button class="btn btn-ghost btn-sm">编辑</button></td>
+              </tr>
+              <tr>
+                <td><div class="user-cell"><span class="user-avatar-sm" style="background:#D97A4A;">吴</span><span>吴凯</span></div></td>
+                <td>市场部</td>
+                <td><span class="role-tag role-user">用户</span></td>
+                <td><span class="badge badge-warning">禁用</span></td>
+                <td style="font-family:var(--font-mono);">0</td>
+                <td style="font-family:var(--font-mono);">89,200</td>
+                <td style="color:var(--fg-secondary);font-size:var(--font-size-sm);">2025-04-18</td>
+                <td><button class="btn btn-ghost btn-sm">编辑</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination">
+          <button disabled>‹</button>
+          <button class="active">1</button>
+          <button>2</button>
+          <button>3</button>
+          <button>4</button>
+          <button>…</button>
+          <button>16</button>
+          <button>›</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function filterUsers(q) {
+      var rows = document.querySelectorAll('tbody tr');
+      rows.forEach(function(r) {
+        var name = r.querySelector('.user-cell').textContent.toLowerCase();
+        r.style.display = name.includes(q.toLowerCase()) ? '' : 'none';
+      });
+    }
+    (function(){var b=document.getElementById('themeToggle');if(b)b.textContent=document.documentElement.getAttribute('data-theme')==='dark'?'☀️':'🌙';})();
+    function toggleTheme(){var h=document.documentElement,d=h.getAttribute('data-theme')==='dark';if(d){h.removeAttribute('data-theme');localStorage.setItem('kb-theme','light');}else{h.setAttribute('data-theme','dark');localStorage.setItem('kb-theme','dark');}var b=document.getElementById('themeToggle');if(b)b.textContent=d?'🌙':'☀️';}
+  </script>
+</body>
+</html>

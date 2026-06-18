@@ -1,0 +1,203 @@
+/* ===========================
+   Design Tokens — Enterprise KB
+   ChatGPT-inspired, no gradients
+   Light + Dark theme
+   =========================== */
+
+:root {
+  /* =====================
+     Light Theme (default)
+     ===================== */
+
+  /* --- Neutral palette --- */
+  --bg:         oklch(98.5% 0.003 240);
+  --surface:    oklch(100% 0 0);
+  --fg:         oklch(22% 0.012 250);
+  --fg-secondary: oklch(50% 0.01 250);
+  --fg-tertiary:  oklch(65% 0.008 250);
+  --border:     oklch(92% 0.005 250);
+  --border-light: oklch(95% 0.003 250);
+
+  /* --- Sidebar (ChatGPT dark) --- */
+  --sidebar-bg:          oklch(18% 0.008 250);
+  --sidebar-hover:       oklch(22% 0.009 250);
+  --sidebar-active:      oklch(25% 0.01 250);
+  --sidebar-fg:          oklch(72% 0.008 250);
+  --sidebar-fg-active:   oklch(95% 0.002 250);
+  --sidebar-divider:     oklch(25% 0.008 250);
+  --sidebar-width: 280px;
+
+  /* --- Chat-specific --- */
+  --chat-user-bg:  oklch(22% 0.012 250);
+  --chat-user-fg:  oklch(95% 0.002 250);
+  --chat-ai-bg:    transparent;
+  --chat-ai-fg:    var(--fg);
+
+  /* --- Accent (ChatGPT green) --- */
+  --accent:       oklch(63% 0.16 160);
+  --accent-hover: oklch(55% 0.18 160);
+  --accent-light: oklch(90% 0.06 160);
+  --accent-text:  #fff;
+
+  /* --- Semantic colors --- */
+  --success: oklch(60% 0.15 145);
+  --warning: oklch(68% 0.14 85);
+  --danger:  oklch(55% 0.18 30);
+  --info:    oklch(58% 0.12 240);
+
+  /* --- Badge bg/fg pairs (semantic) --- */
+  --badge-success-bg: oklch(90% 0.06 145);
+  --badge-success-fg: oklch(35% 0.12 145);
+  --badge-warning-bg: oklch(92% 0.06 85);
+  --badge-warning-fg: oklch(40% 0.12 85);
+  --badge-danger-bg:  oklch(90% 0.06 30);
+  --badge-danger-fg:  oklch(35% 0.14 30);
+  --badge-info-bg:    oklch(90% 0.05 240);
+  --badge-info-fg:    oklch(35% 0.10 240);
+
+  /* --- Hover / code / misc backgrounds --- */
+  --hover-bg:          oklch(98% 0.002 240);
+  --code-bg:           oklch(96% 0.004 240);
+  --conv-hover-bg:     oklch(95% 0.004 240);
+  --conv-active-bg:    oklch(93% 0.008 240);
+  --scrollbar-thumb:       oklch(85% 0.005 250);
+  --scrollbar-thumb-hover: oklch(72% 0.008 250);
+  --toggle-bg:         oklch(82% 0.005 250);
+
+  /* --- KB project tags --- */
+  --tag-shared-bg:    oklch(92% 0.04 170);
+  --tag-shared-fg:    oklch(42% 0.12 170);
+  --tag-isolated-bg:  oklch(92% 0.04 240);
+  --tag-isolated-fg:  oklch(35% 0.10 240);
+  --tag-both-bg:      oklch(92% 0.06 280);
+  --tag-both-fg:      oklch(35% 0.12 280);
+
+  /* --- Role tags (admin/users) --- */
+  --role-admin-bg:  oklch(90% 0.05 240);
+  --role-admin-fg:  oklch(35% 0.10 240);
+  --role-user-bg:   oklch(90% 0.06 160);
+  --role-user-fg:   oklch(35% 0.12 160);
+  --role-viewer-bg: oklch(92% 0.004 240);
+  --role-viewer-fg: oklch(45% 0.01 240);
+
+  /* --- File icon backgrounds --- */
+  --file-icon-pdf: oklch(90% 0.06 30);
+  --file-icon-doc: oklch(90% 0.06 240);
+  --file-icon-md:  oklch(90% 0.06 160);
+  --file-icon-txt: oklch(92% 0.004 240);
+
+  /* --- Collection dots (admin/knowledge) --- */
+  --dot-red:    oklch(55% 0.18 30);
+  --dot-blue:   oklch(55% 0.15 240);
+  --dot-gold:   oklch(65% 0.16 85);
+  --dot-purple: oklch(50% 0.16 290);
+  --dot-teal:   oklch(58% 0.14 170);
+
+  /* --- Typography --- */
+  --font-sans:  -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+  --font-mono:  'JetBrains Mono', 'SF Mono', ui-monospace, Menlo, monospace;
+  --font-size-xs:   11px;
+  --font-size-sm:   13px;
+  --font-size-base: 14px;
+  --font-size-lg:   16px;
+  --font-size-xl:   20px;
+  --font-size-2xl:  24px;
+
+  /* --- Spacing --- */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 24px;
+  --space-2xl: 32px;
+
+  /* --- Radius --- */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-full: 9999px;
+
+  /* --- Shadows --- */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.10);
+
+  /* --- Transitions --- */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s ease;
+}
+
+/* =====================
+   Dark Theme
+   ChatGPT dark mode — bg becomes the current sidebar color
+   ===================== */
+[data-theme="dark"] {
+  --bg:         oklch(22% 0.012 250);
+  --surface:    oklch(26% 0.014 250);
+  --fg:         oklch(95% 0.002 250);
+  --fg-secondary: oklch(70% 0.008 250);
+  --fg-tertiary:  oklch(58% 0.008 250);
+  --border:     oklch(32% 0.01 250);
+  --border-light: oklch(28% 0.008 250);
+
+  /* Sidebar goes even darker */
+  --sidebar-bg:        oklch(15% 0.008 250);
+  --sidebar-hover:     oklch(19% 0.009 250);
+  --sidebar-active:    oklch(22% 0.01 250);
+  --sidebar-fg:        oklch(72% 0.008 250);
+  --sidebar-fg-active: oklch(95% 0.002 250);
+  --sidebar-divider:   oklch(25% 0.008 250);
+
+  /* Chat bubbles (dark) */
+  --chat-user-bg: oklch(28% 0.014 250);
+  --chat-user-fg: oklch(95% 0.002 250);
+
+  /* Accent light — darker to contrast on dark surfaces */
+  --accent-light: oklch(30% 0.10 160);
+
+  /* Badges — invert */
+  --badge-success-bg: oklch(28% 0.08 145);
+  --badge-success-fg: oklch(75% 0.10 145);
+  --badge-warning-bg: oklch(30% 0.08 85);
+  --badge-warning-fg: oklch(78% 0.10 85);
+  --badge-danger-bg:  oklch(28% 0.08 30);
+  --badge-danger-fg:  oklch(75% 0.12 30);
+  --badge-info-bg:    oklch(28% 0.08 240);
+  --badge-info-fg:    oklch(75% 0.10 240);
+
+  /* Hover / code / misc */
+  --hover-bg:          oklch(24% 0.01 250);
+  --code-bg:           oklch(24% 0.01 250);
+  --conv-hover-bg:     oklch(24% 0.01 250);
+  --conv-active-bg:    oklch(28% 0.012 250);
+  --scrollbar-thumb:       oklch(35% 0.008 250);
+  --scrollbar-thumb-hover: oklch(45% 0.008 250);
+  --toggle-bg:         oklch(38% 0.008 250);
+
+  /* KB project tags — dark */
+  --tag-shared-bg:   oklch(28% 0.06 170);
+  --tag-shared-fg:   oklch(72% 0.08 170);
+  --tag-isolated-bg: oklch(28% 0.06 240);
+  --tag-isolated-fg: oklch(72% 0.08 240);
+  --tag-both-bg:     oklch(28% 0.08 280);
+  --tag-both-fg:     oklch(72% 0.10 280);
+
+  /* Role tags — dark */
+  --role-admin-bg:  oklch(28% 0.06 240);
+  --role-admin-fg:  oklch(72% 0.08 240);
+  --role-user-bg:   oklch(28% 0.06 160);
+  --role-user-fg:   oklch(72% 0.08 160);
+  --role-viewer-bg: oklch(28% 0.004 240);
+  --role-viewer-fg: oklch(65% 0.008 250);
+
+  /* File icons — dark */
+  --file-icon-pdf: oklch(35% 0.10 30);
+  --file-icon-doc: oklch(35% 0.10 240);
+  --file-icon-md:  oklch(35% 0.10 160);
+  --file-icon-txt: oklch(35% 0.004 250);
+
+  /* Shadows — darker & more intense */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.5);
+}
